@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,9 +25,9 @@ public class FileService {
     private final UserService userService;
     private final FileRepository fileRepository;
 
-    public void uploadFile(String login, String fileName, MultipartFile file) throws IOException {
+    public void uploadFile(String login, String fileName, long size, byte[] fileContent) throws IOException {
         User userEntity = userService.getUserByLogin(login);
-        File fileEntity = new File(fileName, file.getSize(), file.getBytes(), userEntity);
+        File fileEntity = new File(fileName, size, fileContent, userEntity);
         fileRepository.save(fileEntity);
     }
 
@@ -39,7 +40,7 @@ public class FileService {
     public void renameFile(String login, String fileName, String newFileName) {
         User userEntity = userService.getUserByLogin(login);
         checkUniqueFileName(fileName, userEntity);
-        fileRepository.renameFile(fileName, newFileName);
+        fileRepository.renameFile(fileName, newFileName, userEntity);
     }
 
     public void deleteFile(String login, String fileName) {

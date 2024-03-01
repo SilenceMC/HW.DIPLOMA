@@ -35,6 +35,8 @@ public class FileServiceTest {
     private static MultipartFile file;
     private static User userEntity;
     private static File fileEntity;
+    private static long size;
+    private static byte[] fileContent;
 
     @BeforeAll
     static void init() throws IOException {
@@ -46,6 +48,10 @@ public class FileServiceTest {
 
         file = mock(MockMultipartFile.class);
 
+        size = file.getSize();
+
+        fileContent = file.getBytes();
+
         userEntity = new User(
                 "user",
                 "password"
@@ -53,8 +59,8 @@ public class FileServiceTest {
 
         fileEntity = new File(
                 fileName,
-                file.getSize(),
-                file.getBytes(),
+                size,
+                fileContent,
                 userEntity
         );
 
@@ -65,7 +71,7 @@ public class FileServiceTest {
         when(userService.getUserByLogin(login))
                 .thenReturn(userEntity);
 
-        fileService.uploadFile(login, fileName, file);
+        fileService.uploadFile(login, fileName, size, fileContent);
 
         verify(fileRepository, times(1))
                 .save(fileEntity);
@@ -92,7 +98,7 @@ public class FileServiceTest {
         fileService.renameFile(login, fileName, newFileName);
 
         verify(fileRepository, times(1))
-                .renameFile(fileName, newFileName);
+                .renameFile(fileName, newFileName, userEntity);
     }
 
     @Test

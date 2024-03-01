@@ -28,7 +28,11 @@ public class FileController {
             @RequestHeader("auth-token") String authToken,
             @RequestParam("filename") String fileName,
             @RequestBody MultipartFile file) throws IOException {
-        fileService.uploadFile(authService.getLoginByToken(authToken), fileName, file);
+        fileService.uploadFile(
+                authService.getLoginByToken(authToken),
+                fileName,
+                file.getSize(),
+                file.getBytes());
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .build();

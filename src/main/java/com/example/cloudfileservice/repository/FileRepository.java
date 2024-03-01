@@ -18,8 +18,8 @@ public interface FileRepository extends JpaRepository<File, String> {
 
     @Modifying
     @Transactional
-    @Query("update File f set f.fileName = :newFileName where f.fileName = :fileName")
-    void renameFile(String fileName, String newFileName);
+    @Query("update File f set f.fileName = :newFileName where f.user = : userEntity and  f.fileName = :fileName")
+    void renameFile(String fileName, String newFileName, User userEntity);
 
     @Transactional
     void deleteByFileNameAndUser(String fileName, User userEntity);
